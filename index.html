@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hopewell Health | Unified Dashboard</title>
+    <style>
+        :root { 
+            --primary: #1a237e; 
+            --secondary: #00796b;
+            --accent: #ff6f00;
+            --bg: #f0f2f5; 
+            --white: #ffffff;
+            --text-dark: #1c1e21;
+            --text-muted: #606770;
+            --border: #dddfe2;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            background: var(--bg); 
+            color: var(--text-dark); 
+        }
+
+        /* Top Navigation */
+        header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 0.6rem 1.2rem; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-toggle { font-size: 1.5rem; cursor: pointer; padding: 5px; border-radius: 4px; transition: background 0.2s; }
