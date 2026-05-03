@@ -39,3 +39,214 @@
 
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-toggle { font-size: 1.5rem; cursor: pointer; padding: 5px; border-radius: 4px; transition: background 0.2s; }
+        .menu-toggle:hover { background: rgba(255,255,255,0.1); }
+        .logo-tag { background: white; color: var(--primary); padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 1.2rem; }
+
+        .user-meta { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; }
+        .role-badge { background: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; font-size: 0.7rem; }
+
+        /* Sidebar Navigation Drawer */
+        .drawer {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: var(--white);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1100;
+            overflow-y: auto;
+        }
+        .drawer.open { left: 0; }
+        .drawer-header { padding: 1.5rem; background: #f8f9fa; border-bottom: 1px solid var(--border); }
+        .drawer-section { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+        .drawer-section h4 { padding: 0 1.5rem; margin: 0.5rem 0; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .drawer ul { list-style: none; padding: 0; margin: 0; }
+        .drawer li { padding: 0.8rem 1.5rem; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
+        .drawer li:hover { background: #e8f0fe; color: var(--primary); font-weight: 500; }
+        .drawer li.active { background: #e8f0fe; color: var(--primary); border-left: 4px solid var(--primary); font-weight: 600; }
+
+        /* Main Container */
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+        .view-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px; }
+        .view-header h2 { margin: 0; font-size: 1.8rem; color: var(--primary); }
+
+        /* Appointment Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+        .card { 
+            background: var(--white); 
+            border-radius: 10px; 
+            padding: 1.25rem; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--secondary);
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .card-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
+        .pt-name { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+        .time-label { font-size: 0.8rem; background: #e3f2fd; color: #1565c0; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+        
+        .history-tag { font-size: 0.75rem; color: var(--text-muted); border: 1px solid #eee; padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 5px; }
+        .card-body { margin-bottom: 1.2rem; }
+        .diagnosis { font-size: 0.9rem; color: #444; border-left: 3px solid #eee; padding-left: 10px; margin: 10px 0; }
+
+        .btn-group { display: flex; gap: 8px; }
+        .btn { flex: 1; padding: 0.6rem; border: none; border-radius: 5px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-view { background: var(--secondary); color: white; }
+        .btn-history { background: #f0f2f5; color: var(--text-muted); }
+
+        /* Overlay for Mobile Drawer */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1050; }
+        .overlay.show { display: block; }
+
+        @media (max-width: 768px) { 
+            .grid { grid-template-columns: 1fr; }
+            .view-header h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    
+    <nav class="drawer" id="drawer">
+        <div class="drawer-header">
+            <h2 style="margin:0; font-size: 1.2rem; color: var(--primary);">Hospital Admin</h2>
+            <p style="margin:0; font-size: 0.8rem; color: var(--text-muted);">Role: Senior Consultant</p>
+        </div>
+        
+        <div class="drawer-section">
+            <h4>Personal Dashboard</h4>
+            <ul>
+                <li id="default-view" class="active" onclick="setView('My Appointments', 'Cardiology')">Today's Visits</li>
+                <li onclick="setView('History', 'Cardiology')">Clinical History Logs</li>
+            </ul>
+        </div>
+
+        <div class="drawer-section">
+            <h4>Admin View (All Departments)</h4>
+            <ul id="admin-dept-list">
+                </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-left">
+            <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+            <div class="logo-tag">H</div>
+            <span style="font-weight: 600;">Hopewell OPD</span>
+        </div>
+        <div class="user-meta">
+            <div style="text-align: right; line-height: 1.2;">
+                <strong>Dr. Alexander Smith</strong><br>
+                <span class="role-badge">Admin Access</span>
+            </div>
+            <div style="width: 35px; height: 35px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary);">AS</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="view-header">
+            <div>
+                <h2 id="view-title">My Appointments</h2>
+                <p id="view-subtitle" style="color: var(--text-muted); margin: 5px 0;">Cardiology Department</p>
+            </div>
+            <div id="date-now" style="font-weight: 600; color: var(--secondary);"></div>
+        </div>
+
+        <main class="grid" id="main-display">
+            </main>
+    </div>
+
+    <script>
+        const departments = ["General Medicine", "Pediatrics", "Orthopedics", "Cardiology", "Neurology", "ENT", "Dermatology", "Oncology"];
+        
+        const patients = [
+            { id: "P-881", name: "Anjali Rao", dept: "Cardiology", time: "09:00 AM", age: 45, diagnosis: "Atrial fibrillation follow-up", history: ["Oct 2025: Echo", "Jan 2026: ECG Normal"] },
+            { id: "P-882", name: "Vikram Reddy", dept: "Cardiology", time: "09:30 AM", age: 32, diagnosis: "Non-specific chest pain", history: ["Feb 2026: ER Visit"] },
+            { id: "P-883", name: "Suresh Khanna", dept: "Orthopedics", time: "10:15 AM", age: 58, diagnosis: "Post-op Knee Replacement", history: ["Nov 2025: Surgery", "Dec 2025: Physio"] },
+            { id: "P-884", name: "Maria Garcia", dept: "Pediatrics", time: "11:00 AM", age: 7, diagnosis: "Seasonal flu & cough", history: ["Annual Checkup 2025"] },
+            { id: "P-885", name: "John Doe", dept: "Neurology", time: "11:45 AM", age: 62, diagnosis: "Chronic Migraine management", history: ["MRI Jan 2026"] },
+            { id: "P-886", name: "Priya Kumar", dept: "General Medicine", time: "12:30 PM", age: 38, diagnosis: "Routine wellness exam", history: ["Blood Work 2025"] }
+        ];
+
+        function toggleMenu() {
+            document.getElementById('drawer').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        function setView(type, dept) {
+            document.getElementById('view-title').innerText = type;
+            document.getElementById('view-subtitle').innerText = `${dept} Department Data`;
+            
+            // Manage Active States in Sidebar
+            document.querySelectorAll('.drawer li').forEach(li => li.classList.remove('active'));
+            
+            const filtered = patients.filter(p => p.dept === dept || dept === 'All');
+            
+            if (type === 'History') {
+                renderHistory(filtered);
+            } else {
+                renderCards(filtered);
+            }
+            
+            if(window.innerWidth < 768) toggleMenu();
+        }
+
+        function renderCards(data) {
+            const display = document.getElementById('main-display');
+            if(data.length === 0) { display.innerHTML = "<p>No scheduled visits for this department.</p>"; return; }
+            
+            display.innerHTML = data.map(p => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="pt-name">${p.name} <small>(${p.age}y)</small></div>
+                        <div class="time-label">${p.time}</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="diagnosis"><strong>Current Issue:</strong><br>${p.diagnosis}</div>
+                        <div class="history-tag">Latest Record: ${p.history}</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-view" onclick="alert('Starting Consultation...')">Start Visit</button>
+                        <button class="btn btn-history" onclick="alert('Records:\\\\n' + '${p.history.join('\\\\n')}')">History</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderHistory(data) {
+            const display = document.getElementById('main-display');
+            display.innerHTML = data.map(p => `
+                <div class="card" style="border-left-color: #607d8b;">
+                    <div class="card-header">
+                        <div class="pt-name">${p.name}</div>
+                        <div style="font-size: 0.75rem; color: #666;">ID: ${p.id}</div>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Clinical Logs:</strong></p>
+                        <ul style="font-size: 0.85rem; color: #555; padding-left: 20px;">
+                            ${p.history.map(h => `<li>${h}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <button class="btn btn-history" style="width:100%" onclick="alert('Exporting Archive...')">Export PDF</button>
+                </div>
+            `).join('');
+        }
+
+        function init() {
+            const deptList = document.getElementById('admin-dept-list');
+            deptList.innerHTML = departments.map(d => `
+                <li onclick="setView('Dashboard', '${d}')">${d} Department</li>
+            `).join('');
+            
+            document.getElementById('date-now').innerText = new Date().toDateString();
+            setView('My Appointments', 'Cardiology');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
